@@ -1,6 +1,6 @@
 {
     "name": "esse-gallery",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Foto-Galerie mit Alben, Upload, Thumbnail-Generierung und Lightbox.",
     "author": "Andreas P.",
     "class": "EsseGallery\\Plugin",

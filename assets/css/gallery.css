@@ -1,0 +1,254 @@
+/* esse-gallery v0.1.0 — Plugin CSS */
+
+/* =====================================================================
+   Esse-Grid Fallback (falls Theme esse-grid noch nicht implementiert)
+   ===================================================================== */
+.esse-grid-wrap {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.esse-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.esse-grid[data-cols="4"] {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.esse-grid[data-cols="6"] {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 480px) {
+    .esse-grid[data-cols="4"] { grid-template-columns: repeat(3, 1fr); }
+    .esse-grid[data-cols="6"] { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .esse-grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+    .esse-grid[data-cols="6"] { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1024px) {
+    .esse-grid[data-cols="6"] { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* =====================================================================
+   Galerie-Übersicht
+   ===================================================================== */
+.gal-overview {
+    padding: 2rem 0;
+}
+
+.gal-album-card {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.gal-album-thumb {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+    background: #1a1a1a;
+    border-radius: 6px;
+    margin-bottom: .5rem;
+}
+
+.gal-album-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s ease;
+}
+
+.gal-album-card:hover .gal-album-thumb img {
+    transform: scale(1.05);
+}
+
+.gal-album-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gal-album-desc {
+    font-size: .875rem;
+    opacity: .65;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: .15rem;
+}
+
+/* =====================================================================
+   Badges
+   ===================================================================== */
+.gal-badge {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 600;
+    padding: .2em .5em;
+    border-radius: 4px;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+.gal-badge-count {
+    position: absolute;
+    bottom: .4rem;
+    right: .4rem;
+    background: rgba(0, 0, 0, .65);
+    color: #fff;
+}
+
+.gal-badge-private {
+    position: absolute;
+    top: .4rem;
+    left: .4rem;
+    background: #ffc107;
+    color: #000;
+}
+
+/* =====================================================================
+   Einzelalbum
+   ===================================================================== */
+.gal-back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: .875rem;
+    text-decoration: none;
+    opacity: .65;
+}
+
+.gal-back-link:hover {
+    opacity: 1;
+}
+
+.gal-thumb-link {
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #111;
+}
+
+.gal-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .25s ease;
+}
+
+.gal-thumb-link:hover .gal-thumb-img {
+    transform: scale(1.08);
+}
+
+/* =====================================================================
+   Lightbox
+   ===================================================================== */
+.gal-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .93);
+    z-index: 1050;
+    flex-direction: column;
+}
+
+.gal-lightbox.is-open {
+    display: flex;
+}
+
+.gal-lb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    flex-shrink: 0;
+}
+
+.gal-lb-counter {
+    font-size: .875rem;
+    color: rgba(255, 255, 255, .55);
+}
+
+.gal-lb-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: .65;
+    padding: .2rem .5rem;
+}
+
+.gal-lb-close:hover {
+    opacity: 1;
+}
+
+.gal-lb-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 0;
+    padding: 0 3.5rem;
+}
+
+.gal-lb-body img {
+    max-width: 100%;
+    max-height: calc(100vh - 110px);
+    object-fit: contain;
+    display: block;
+}
+
+.gal-lb-prev,
+.gal-lb-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, .5);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    padding: .4rem .75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.gal-lb-prev:hover,
+.gal-lb-next:hover {
+    background: rgba(0, 0, 0, .85);
+}
+
+.gal-lb-prev:disabled,
+.gal-lb-next:disabled {
+    opacity: .2;
+    cursor: default;
+}
+
+.gal-lb-prev { left: .5rem; }
+.gal-lb-next { right: .5rem; }
+
+.gal-lb-footer {
+    padding: .4rem 1rem .75rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.gal-lb-title {
+    font-size: .875rem;
+    color: rgba(255, 255, 255, .55);
+    margin: 0;
+}

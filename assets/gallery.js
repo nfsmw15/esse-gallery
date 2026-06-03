@@ -1,6 +1,6 @@
 /**
  * esse-gallery — Lightbox + Admin-Upload
- * Vanilla JS, Bootstrap 5, keine externen Abhängigkeiten.
+ * Vanilla JS, keine externen Abhängigkeiten.
  *
  * Exportierte Einstiegspunkte:
  *   galLightboxInit()  — Frontend-Album-Seite
@@ -37,12 +37,13 @@ function galLightboxInit() {
 
     function open(i) {
         show(i);
-        bootstrap.Modal.getOrCreateInstance(lightbox).show();
+        lightbox.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
     }
 
     function close() {
-        var m = bootstrap.Modal.getInstance(lightbox);
-        if (m) m.hide();
+        lightbox.classList.remove('is-open');
+        document.body.style.overflow = '';
     }
 
     links.forEach(function (a) {
@@ -68,7 +69,7 @@ function galLightboxInit() {
 
     // Tastatur
     document.addEventListener('keydown', function (e) {
-        if (!lightbox.classList.contains('show')) return;
+        if (!lightbox.classList.contains('is-open')) return;
         if (e.key === 'ArrowLeft')  { show(cur - 1); }
         if (e.key === 'ArrowRight') { show(cur + 1); }
         if (e.key === 'Escape')     { close(); }

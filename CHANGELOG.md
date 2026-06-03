@@ -1,5 +1,17 @@
 # Changelog — esse-gallery
 
+## [0.1.0] — 2026-06-03
+
+### Geändert
+- Bootstrap-Grid vollständig entfernt — Frontend nutzt jetzt Theme-agnostische `esse-grid`-Klassen
+- Neue Plugin-CSS-Datei `assets/css/gallery.css` mit allen eigenen Styles (`.gal-*`)
+- Lightbox-Overlay komplett neu ohne Bootstrap-Modal — eigene CSS-Klasse `.gal-lightbox.is-open`
+- `gallery.js` ohne Bootstrap-Abhängigkeit (`bootstrap.Modal` entfernt)
+- Bootstrap-Badges ersetzt durch `.gal-badge`, `.gal-badge-count`, `.gal-badge-private`
+- CSS-Route `/plugins/esse-gallery/assets/css/{file}` hinzugefügt
+
+---
+
 ## [0.0.1] — 2026-06-03
 
 Erste öffentliche Version.

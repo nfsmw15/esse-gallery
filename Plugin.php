@@ -30,6 +30,13 @@ class Plugin extends \Esse\Plugin
             readfile($path);
         }, ['name' => 'gallery.assets', 'auth' => 'public']);
 
+        Router::get('/plugins/esse-gallery/assets/css/{file}', function (string $file) {
+            $path = $this->basePath('assets/css/' . basename($file));
+            if (!file_exists($path)) { http_response_code(404); exit; }
+            header('Content-Type: text/css');
+            readfile($path);
+        }, ['name' => 'gallery.assets.css', 'auth' => 'public']);
+
         // --- Bild-Serving (public) ---
         Router::get('/gallery/img/{id}', function (string $id) use ($base) {
             $imageId = (int) $id;
