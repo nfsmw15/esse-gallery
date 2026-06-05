@@ -1,5 +1,20 @@
 # Changelog — esse-gallery
 
+## [0.2.1] — 2026-06-05
+
+### Behoben
+- **Lightbox-Buttons** (Schließen / Zurück / Weiter) reagierten in manchen Themes nicht auf Klicks —
+  Event-Listener werden jetzt per Delegation auf dem Lightbox-Container registriert statt direkt
+  auf einzelnen Elementen, wodurch ein `TypeError` bei fehlenden IDs vermieden wird
+- **Lightbox öffnet sich nicht** im Cyber-Theme: `z-index` von 1050 auf 9999 erhöht,
+  `.is-open { display: flex !important }` verhindert Theme-Überschreibungen
+- **„← Zurück zur Galerie"** ist jetzt mit `text-decoration: underline`, `opacity: .8` und
+  `color: inherit` in allen Themes gut lesbar
+- `album.php`: `Ui::section()` entfernt — der Album-Titel erscheint bereits im Theme-Seitentitel;
+  der Wrapper erzeugte in manchen Themes Stacking-Context-Probleme
+
+---
+
 ## [0.2.0] — 2026-06-05
 
 ### Geändert
