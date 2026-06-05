@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Esse\Auth;
-use Esse\Ui;
 use EsseGallery\GalleryRepository;
 
 $album = GalleryRepository::albumById($albumId);
@@ -24,53 +23,47 @@ $images    = GalleryRepository::imagesByAlbum($albumId);
 $pageTitle = htmlspecialchars($album['title']) . ' — Bilder';
 $activeNav = 'admin.gallery';
 
-$topbarRight = Ui::button('Zurück', '/admin/gallery', [
-                   'variant' => 'ghost',
-                   'size'    => 'sm',
-                   'icon'    => 'bi bi-arrow-left',
-               ])
-             . ' '
-             . Ui::button('Album bearbeiten', '/admin/gallery/' . (int) $albumId . '/edit', [
-                   'variant' => 'ghost',
-                   'size'    => 'sm',
-                   'icon'    => 'bi bi-pencil',
-               ]);
+$topbarRight = '<a href="/admin/gallery" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Zurück
+</a>
+<a href="/admin/gallery/' . (int) $albumId . '/edit" class="btn btn-outline-primary btn-sm ms-2">
+    <i class="bi bi-pencil"></i> Album bearbeiten
+</a>';
 
 ob_start();
 ?>
 <!-- Upload-Zone -->
 <div id="gal-dropzone"
-     class="gal-dropzone"
-     ondragover="event.preventDefault(); this.classList.add('gal-dropzone--active')"
-     ondragleave="this.classList.remove('gal-dropzone--active')"
+     class="border border-dashed rounded-3 p-5 text-center mb-4 position-relative"
+     style="border-color:#444 !important; cursor:pointer; transition:background .2s;"
+     ondragover="event.preventDefault(); this.classList.add('bg-secondary')"
+     ondragleave="this.classList.remove('bg-secondary')"
      ondrop="galHandleDrop(event)">
-    <i class="bi bi-cloud-upload" style="font-size:2rem;display:block;margin-bottom:.5rem;opacity:.6;"></i>
-    <div style="font-weight:600;">Bilder hierher ziehen</div>
-    <div style="font-size:.875rem;opacity:.6;">oder</div>
-    <label class="esse-btn esse-btn--primary esse-btn--sm" style="margin-top:.5rem;cursor:pointer;">
+    <i class="bi bi-cloud-upload fs-1 text-muted d-block mb-2"></i>
+    <div class="fw-semibold">Bilder hierher ziehen</div>
+    <div class="text-muted small">oder</div>
+    <label class="btn btn-sm btn-primary mt-2">
         <i class="bi bi-folder2-open"></i> Dateien auswählen
-        <input type="file" id="gal-file-input" multiple accept="image/*" style="display:none;">
+        <input type="file" id="gal-file-input" multiple accept="image/*" class="d-none">
     </label>
-    <div style="font-size:.8rem;opacity:.5;margin-top:.35rem;">JPEG, PNG, GIF, WebP — max. 20 MB pro Bild</div>
+    <div class="form-text mt-1">JPEG, PNG, GIF, WebP — max. 20 MB pro Bild</div>
 </div>
 
 <!-- Fortschrittsbereich -->
-<div id="gal-progress-area" style="margin-bottom:1rem;"></div>
+<div id="gal-progress-area" class="mb-4"></div>
 
 <!-- Bilder-Grid -->
-<div class="esse-grid-wrap">
-    <div id="gal-image-grid" class="esse-grid" data-cols="6">
-        <?php foreach ($images as $img): ?>
-            <div class="esse-grid-item" id="gal-img-<?= (int) $img['id'] ?>">
-                <?php include __DIR__ . '/image-card.php'; ?>
-            </div>
-        <?php endforeach; ?>
-        <?php if (empty($images)): ?>
-            <div id="gal-empty-hint" style="grid-column:1/-1;">
-                <?= Ui::emptyState('Noch keine Bilder', 'Bilder hochladen um zu starten.', ['icon' => 'bi bi-images']) ?>
-            </div>
-        <?php endif; ?>
-    </div>
+<div id="gal-image-grid" class="row g-3">
+    <?php foreach ($images as $img): ?>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2" id="gal-img-<?= (int) $img['id'] ?>">
+            <?php include __DIR__ . '/image-card.php'; ?>
+        </div>
+    <?php endforeach; ?>
+    <?php if (empty($images)): ?>
+        <div class="col-12 text-center text-muted py-4" id="gal-empty-hint">
+            <i class="bi bi-images opacity-50"></i> Noch keine Bilder — Bilder hochladen um zu starten.
+        </div>
+    <?php endif; ?>
 </div>
 <?php
 $content = ob_get_clean();
