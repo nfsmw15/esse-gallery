@@ -15,9 +15,9 @@ class Plugin extends \Esse\Plugin
     {
         GalleryRepository::migrate();
 
-        $this->addAdminNav('Galerie', '/admin/gallery', 'bi-images', 'admin.gallery');
-        $this->registerPage('/gallery',        'Galerie',        'bi-images');
-        $this->registerPage('/gallery/{slug}', 'Galerie-Album',  'bi-images');
+        $this->addAdminNav('Galerie', '/admin/gallery', 'images', 'admin.gallery');
+        $this->registerPage('/gallery',        'Galerie',        'images');
+        $this->registerPage('/gallery/{slug}', 'Galerie-Album',  'images');
 
         $base = $this->basePath();
 
@@ -50,7 +50,7 @@ class Plugin extends \Esse\Plugin
 
         // --- Frontend ---
         Router::get('/gallery', function () use ($base) {
-            \Esse\PageRenderer::renderFile("{$base}/frontend/list.php", 'Galerie');
+            \Esse\PageRenderer::renderFile("{$base}/frontend/list.php", 'Galerie', 'public', 'images');
         }, ['name' => 'gallery.list', 'auth' => 'public']);
 
         Router::get('/gallery/{slug}', function (string $slug) use ($base) {
@@ -58,7 +58,7 @@ class Plugin extends \Esse\Plugin
             $title = ($album && ($album['is_public'] || \Esse\Auth::check()))
                 ? $album['title']
                 : 'Galerie';
-            \Esse\PageRenderer::renderFile("{$base}/frontend/album.php", $title);
+            \Esse\PageRenderer::renderFile("{$base}/frontend/album.php", $title, 'public', 'images');
         }, ['name' => 'gallery.album', 'auth' => 'public']);
 
         // --- Admin: Alben ---

@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Esse\Auth;
+use Esse\Ui;
 use EsseGallery\GalleryRepository;
 
-// Bearbeiten oder Neu?
 $isEdit  = isset($albumId);
 $album   = $isEdit ? GalleryRepository::albumById($albumId) : null;
 
@@ -66,72 +66,70 @@ if (!empty($_SESSION['flash'])) {
 $pageTitle = $isEdit ? 'Album bearbeiten' : 'Neues Album';
 $activeNav = 'admin.gallery';
 
-$topbarRight = '<a href="/admin/gallery" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-arrow-left"></i> Zurück
-</a>';
+$topbarRight = Ui::button('Zurück', '/admin/gallery', [
+    'variant' => 'ghost',
+    'size'    => 'sm',
+    'icon'    => 'bi bi-arrow-left',
+]);
 
+// Formular-HTML erfassen, dann in Ui::panel() wrappen
 ob_start();
 ?>
-<?php if ($errors): ?>
-    <div class="alert alert-danger">
-        <?php foreach ($errors as $e): ?>
-            <div><?= htmlspecialchars($e) ?></div>
-        <?php endforeach; ?>
+<form method="POST">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Auth::csrfToken()) ?>">
+
+    <div class="esse-form-group">
+        <label class="esse-form-label">Titel <span style="color:var(--esse-danger,#dc3545)">*</span></label>
+        <input type="text" name="title" class="esse-form-control"
+               value="<?= htmlspecialchars($values['title']) ?>"
+               id="albumTitle" required>
     </div>
-<?php endif; ?>
 
-<div class="card border-0 shadow-sm" style="max-width:640px;">
-    <div class="card-body">
-        <form method="POST">
-            <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Auth::csrfToken()) ?>">
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Titel <span class="text-danger">*</span></label>
-                <input type="text" name="title" class="form-control"
-                       value="<?= htmlspecialchars($values['title']) ?>"
-                       id="albumTitle" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Slug</label>
-                <input type="text" name="slug" class="form-control font-monospace"
-                       value="<?= htmlspecialchars($values['slug']) ?>"
-                       id="albumSlug"
-                       placeholder="wird automatisch aus dem Titel generiert">
-                <div class="form-text">Wird für die URL verwendet: /gallery/<strong id="slugPreview"><?= htmlspecialchars($values['slug']) ?></strong></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Beschreibung</label>
-                <textarea name="description" class="form-control" rows="3"
-                          placeholder="Optional"><?= htmlspecialchars($values['description']) ?></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Sortierung</label>
-                <input type="number" name="sort_order" class="form-control" style="max-width:120px;"
-                       value="<?= (int) $values['sort_order'] ?>">
-                <div class="form-text">Niedrigere Zahl = weiter oben.</div>
-            </div>
-
-            <div class="mb-4">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="is_public" id="isPublic"
-                           <?= $values['is_public'] ? 'checked' : '' ?>>
-                    <label class="form-check-label" for="isPublic">Öffentlich sichtbar</label>
-                </div>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Speichern' : 'Album anlegen' ?>
-                </button>
-                <a href="/admin/gallery" class="btn btn-outline-secondary">Abbrechen</a>
-            </div>
-        </form>
+    <div class="esse-form-group">
+        <label class="esse-form-label">Slug</label>
+        <input type="text" name="slug" class="esse-form-control esse-form-control--mono"
+               value="<?= htmlspecialchars($values['slug']) ?>"
+               id="albumSlug"
+               placeholder="wird automatisch aus dem Titel generiert">
+        <div class="esse-form-hint">Wird für die URL verwendet: /gallery/<strong id="slugPreview"><?= htmlspecialchars($values['slug']) ?></strong></div>
     </div>
-</div>
+
+    <div class="esse-form-group">
+        <label class="esse-form-label">Beschreibung</label>
+        <textarea name="description" class="esse-form-control" rows="3"
+                  placeholder="Optional"><?= htmlspecialchars($values['description']) ?></textarea>
+    </div>
+
+    <div class="esse-form-group">
+        <label class="esse-form-label">Sortierung</label>
+        <input type="number" name="sort_order" class="esse-form-control" style="max-width:120px;"
+               value="<?= (int) $values['sort_order'] ?>">
+        <div class="esse-form-hint">Niedrigere Zahl = weiter oben.</div>
+    </div>
+
+    <div class="esse-form-group">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+            <input type="checkbox" name="is_public" id="isPublic"
+                   <?= $values['is_public'] ? 'checked' : '' ?>>
+            Öffentlich sichtbar
+        </label>
+    </div>
+
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;">
+        <button type="submit" class="esse-btn esse-btn--primary esse-btn--md">
+            <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Speichern' : 'Album anlegen' ?>
+        </button>
+        <?= Ui::button('Abbrechen', '/admin/gallery', ['variant' => 'ghost']) ?>
+    </div>
+</form>
 <?php
+$formHtml = ob_get_clean();
+
+ob_start();
+if ($errors) {
+    echo Ui::alert('danger', implode('<br>', array_map('htmlspecialchars', $errors)));
+}
+echo '<div style="max-width:640px;">' . Ui::panel('', $formHtml) . '</div>';
 $content = ob_get_clean();
 
 $extraScripts = '<script>

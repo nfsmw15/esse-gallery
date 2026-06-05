@@ -1,5 +1,31 @@
 # Changelog — esse-gallery
 
+## [0.2.0] — 2026-06-05
+
+### Geändert
+- **Ui-Migration:** Alle Bootstrap-Komponenten durch `Esse\Ui`-Methoden ersetzt — Plugin funktioniert
+  jetzt mit beliebigen Themes, die keine Bootstrap-Abhängigkeit voraussetzen
+- Frontend `list.php`: Album-Grid via `Ui::grid()` (cols=4), leere Galerie via `Ui::emptyState()`
+- Frontend `album.php`: Foto-Grid via `Ui::section()` + `Ui::grid()` (cols=6), leere Ansicht via `Ui::emptyState()`
+- Admin `list.php`: Albentabelle via `Ui::panel()` + `Ui::table()`, Badges via `Ui::badge()`,
+  Aktions-Buttons via `Ui::button()` — Bootstrap-Lösch-Modal durch direkten POST-Button mit `confirm()` ersetzt
+- Admin `form.php`: Fehler-Alert via `Ui::alert()`, Formular-Container via `Ui::panel()`,
+  Buttons via `Ui::button()` / `esse-btn`-Klassen
+- Admin `images.php`: Bilder-Grid auf `esse-grid` umgestellt, Upload-Dropzone als `.gal-dropzone`,
+  leere Ansicht via `Ui::emptyState()`, Buttons via `Ui::button()`
+- Admin `image-card.php`: Bootstrap-Card entfernt — eigene Klassen `.gal-image-card`, `.gal-card-thumb`,
+  `.gal-image-card-body`, `.gal-image-card-footer`; Cover-Badge via `Ui::badge()`;
+  Aktions-Buttons als `<button type="button">` mit `esse-btn`-Klassen
+- `gallery.js`: Bootstrap-Klassen durchgehend ersetzt (`bg-secondary` → `gal-dropzone--active`,
+  Bootstrap-Progress → `.gal-progress-*`, Bootstrap-Alert → `.gal-upload-error`,
+  `col-*` → `esse-grid-item`, `badge bg-warning` → `esse-badge--warning`)
+- `gallery.css`: Neue Abschnitte für `.gal-dropzone`, `.gal-image-card`, `.gal-caption-input`,
+  `.gal-progress-*`, `.gal-upload-error`
+- `Plugin.php`: Icon-Namen ohne Pack-Prefix (`images` statt `bi-images`) für
+  `registerPage()`, `addAdminNav()` und `renderFile()`; `renderFile()` erhält nun den Icon-Parameter
+
+---
+
 ## [0.1.0] — 2026-06-03
 
 ### Geändert

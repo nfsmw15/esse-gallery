@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Esse\Ui;
 use EsseGallery\GalleryRepository;
 
 $slug  = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
@@ -28,23 +29,25 @@ $images = GalleryRepository::imagesByAlbum((int) $album['id']);
 <?php endif; ?>
 
 <?php if (empty($images)): ?>
-    <p style="text-align:center; padding:3rem 0; opacity:.5;">Dieses Album enthält noch keine Bilder.</p>
+    <?= Ui::emptyState('Noch keine Bilder', 'Dieses Album enthält noch keine Bilder.', ['icon' => 'bi bi-images']) ?>
 <?php else: ?>
-    <div class="esse-grid" data-cols="6" id="gal-grid">
-        <?php foreach ($images as $i => $img): ?>
-            <div class="esse-grid-item">
-                <a href="/gallery/img/<?= (int) $img['id'] ?>"
-                   class="gal-thumb-link"
-                   data-index="<?= $i ?>"
-                   data-caption="<?= htmlspecialchars($img['caption'], ENT_QUOTES) ?>">
-                    <img src="/gallery/thumb/<?= (int) $img['id'] ?>"
-                         alt="<?= htmlspecialchars($img['caption'] ?: $img['original_name']) ?>"
-                         class="gal-thumb-img"
-                         loading="lazy">
-                </a>
-            </div>
-        <?php endforeach; ?>
-    </div>
+    <?php
+    $items = [];
+    foreach ($images as $i => $img) {
+        ob_start(); ?>
+        <a href="/gallery/img/<?= (int) $img['id'] ?>"
+           class="gal-thumb-link"
+           data-index="<?= $i ?>"
+           data-caption="<?= htmlspecialchars($img['caption'], ENT_QUOTES) ?>">
+            <img src="/gallery/thumb/<?= (int) $img['id'] ?>"
+                 alt="<?= htmlspecialchars($img['caption'] ?: $img['original_name']) ?>"
+                 class="gal-thumb-img"
+                 loading="lazy">
+        </a>
+        <?php $items[] = ob_get_clean();
+    }
+    echo Ui::section($album['title'], Ui::grid($items, ['cols' => 6]), []);
+    ?>
 <?php endif; ?>
 
 <!-- Lightbox -->

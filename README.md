@@ -4,6 +4,7 @@ Foto-Galerie-Plugin für das [ESSE CMS](https://github.com/nfsmw15/esse-cms).
 
 ## Features
 
+- **Theme-agnostisch** — Ausgabe ausschließlich über `Esse\Ui`-Methoden; kein Bootstrap im Plugin-Output
 - **Albumverwaltung** — Alben anlegen, bearbeiten, löschen
 - **Drag & Drop Upload** — Mehrere Bilder gleichzeitig hochladen mit Fortschrittsanzeige
 - **Automatische Thumbnails** — PHP GD, 300×300, Square-Crop, EXIF-Rotationskorrektur
@@ -18,7 +19,7 @@ Foto-Galerie-Plugin für das [ESSE CMS](https://github.com/nfsmw15/esse-cms).
 
 - PHP 8.1+
 - PHP GD Extension (`ext-gd`)
-- ESSE CMS >= 0.1.0
+- ESSE CMS >= 0.2.0 (wegen `Esse\Ui`-Klasse)
 
 ## Installation
 

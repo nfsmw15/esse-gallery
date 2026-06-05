@@ -96,7 +96,7 @@ function galAdminInit() {
     // --- Drag & Drop ---
     dropzone.addEventListener('drop', function (e) {
         e.preventDefault();
-        dropzone.classList.remove('bg-secondary');
+        dropzone.classList.remove('gal-dropzone--active');
         var files = Array.from(e.dataTransfer.files).filter(function (f) {
             return f.type.startsWith('image/');
         });
@@ -135,7 +135,7 @@ function galAdminInit() {
 // window-level-Handler für den Drop auf der Drop-Zone (auch von Plugin.php aus aufgerufen)
 function galHandleDrop(e) {
     e.preventDefault();
-    document.getElementById('gal-dropzone').classList.remove('bg-secondary');
+    document.getElementById('gal-dropzone').classList.remove('gal-dropzone--active');
     var files = Array.from(e.dataTransfer.files).filter(function (f) {
         return f.type.startsWith('image/');
     });
@@ -155,14 +155,14 @@ function galUploadSingle(file) {
     // Fortschrittsbalken anlegen
     var barId  = 'gal-bar-' + Date.now() + '-' + Math.random().toString(36).slice(2);
     var barWrap = document.createElement('div');
-    barWrap.className = 'mb-2';
+    barWrap.className = 'gal-progress-wrap';
     barWrap.innerHTML =
-        '<div class="d-flex align-items-center gap-2 mb-1">' +
-            '<span class="small text-truncate flex-fill" style="max-width:250px;">' + galEsc(file.name) + '</span>' +
-            '<span class="small text-muted" id="' + barId + '-pct">0 %</span>' +
+        '<div class="gal-progress-info">' +
+            '<span class="gal-progress-name">' + galEsc(file.name) + '</span>' +
+            '<span class="gal-progress-pct" id="' + barId + '-pct">0 %</span>' +
         '</div>' +
-        '<div class="progress" style="height:6px;">' +
-            '<div id="' + barId + '" class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%"></div>' +
+        '<div class="gal-progress-track">' +
+            '<div id="' + barId + '" class="gal-progress-fill" style="width:0%"></div>' +
         '</div>';
     progressArea.appendChild(barWrap);
 
@@ -190,10 +190,8 @@ function galUploadSingle(file) {
 
         if (!res.success) {
             var errEl = document.createElement('div');
-            errEl.className = 'alert alert-danger alert-dismissible small py-1 px-2';
-            errEl.innerHTML =
-                galEsc(file.name) + ': ' + galEsc(res.error || 'Upload-Fehler') +
-                '<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>';
+            errEl.className = 'gal-upload-error';
+            errEl.textContent = galEsc(file.name) + ': ' + (res.error || 'Upload-Fehler');
             progressArea.appendChild(errEl);
             return;
         }
@@ -204,7 +202,7 @@ function galUploadSingle(file) {
 
         // Karte einfügen
         var col = document.createElement('div');
-        col.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+        col.className = 'esse-grid-item';
         col.id = 'gal-img-' + res.image_id;
         col.innerHTML = res.html;
         imageGrid.appendChild(col);
@@ -213,10 +211,8 @@ function galUploadSingle(file) {
     xhr.addEventListener('error', function () {
         barWrap.remove();
         var errEl = document.createElement('div');
-        errEl.className = 'alert alert-danger alert-dismissible small py-1 px-2';
-        errEl.innerHTML =
-            galEsc(file.name) + ': Netzwerkfehler.' +
-            '<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>';
+        errEl.className = 'gal-upload-error';
+        errEl.textContent = galEsc(file.name) + ': Netzwerkfehler.';
         progressArea.appendChild(errEl);
     });
 
@@ -245,11 +241,14 @@ function galDeleteImage(imgId) {
                 if (col) col.remove();
                 // Wenn Grid leer → Hinweis anzeigen
                 var grid = document.getElementById('gal-image-grid');
-                if (grid && grid.querySelectorAll('.gal-card').length === 0) {
+                if (grid && grid.querySelectorAll('.gal-image-card').length === 0) {
                     var hint = document.createElement('div');
                     hint.id = 'gal-empty-hint';
-                    hint.className = 'col-12 text-center text-muted py-4';
-                    hint.innerHTML = '<i class="bi bi-images opacity-50"></i> Noch keine Bilder.';
+                    hint.style.cssText = 'grid-column:1/-1';
+                    hint.innerHTML = '<div class="esse-empty-state">'
+                        + '<div class="esse-empty-icon"><i class="bi bi-images"></i></div>'
+                        + '<h3 class="esse-empty-title">Noch keine Bilder</h3>'
+                        + '</div>';
                     grid.appendChild(hint);
                 }
             } else {
@@ -266,16 +265,16 @@ function galSetCover(imgId) {
         .then(function (res) {
             if (res.success) {
                 // Alle Cover-Badges entfernen und neues setzen
-                document.querySelectorAll('.gal-card').forEach(function (card) {
-                    var badge = card.querySelector('.badge');
-                    if (badge && badge.innerHTML.includes('Cover')) badge.remove();
+                document.querySelectorAll('.gal-image-card').forEach(function (card) {
+                    var badge = card.querySelector('.esse-badge--warning');
+                    if (badge) badge.remove();
                 });
-                var newCard = document.querySelector('.gal-card[data-img-id="' + imgId + '"] .position-relative');
-                if (newCard) {
+                var thumb = document.querySelector('.gal-image-card[data-img-id="' + imgId + '"] .gal-card-thumb');
+                if (thumb) {
                     var badge = document.createElement('span');
-                    badge.className = 'badge bg-warning text-dark position-absolute top-0 start-0 m-1';
-                    badge.innerHTML = '<i class="bi bi-star-fill"></i> Cover';
-                    newCard.appendChild(badge);
+                    badge.className = 'esse-badge esse-badge--warning';
+                    badge.innerHTML = '★ Cover';
+                    thumb.appendChild(badge);
                 }
                 GAL_COVER_ID = imgId;
             } else {
