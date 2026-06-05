@@ -26,13 +26,12 @@ function galLightboxInit() {
 
     function show(i) {
         cur = Math.max(0, Math.min(i, links.length - 1));
-        var link      = links[cur];
-        lbImg.src     = link.href;
-        lbImg.alt     = link.dataset.caption || '';
-        lbTitle.textContent   = link.dataset.caption || '';
-        lbCounter.textContent = (cur + 1) + ' / ' + links.length;
-        lbPrev.disabled = cur === 0;
-        lbNext.disabled = cur === links.length - 1;
+        var link = links[cur];
+        if (lbImg)     { lbImg.src = link.href; lbImg.alt = link.dataset.caption || ''; }
+        if (lbTitle)   lbTitle.textContent   = link.dataset.caption || '';
+        if (lbCounter) lbCounter.textContent = (cur + 1) + ' / ' + links.length;
+        if (lbPrev)    lbPrev.disabled = cur === 0;
+        if (lbNext)    lbNext.disabled = cur === links.length - 1;
     }
 
     function open(i) {
@@ -53,9 +52,14 @@ function galLightboxInit() {
         });
     });
 
-    lbClose.addEventListener('click', close);
-    lbPrev.addEventListener('click', function () { show(cur - 1); });
-    lbNext.addEventListener('click', function () { show(cur + 1); });
+    // Event-Delegation: ein Handler auf dem Container statt drei auf Null-anfälligen IDs
+    lightbox.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t === lightbox)             { close(); return; }
+        if (t.id === 'gal-lb-close')   { close(); return; }
+        if (t.id === 'gal-lb-prev')    { show(cur - 1); return; }
+        if (t.id === 'gal-lb-next')    { show(cur + 1); return; }
+    });
 
     // Touch-Swipe
     var touchStartX = 0;

@@ -46,7 +46,7 @@ $images = GalleryRepository::imagesByAlbum((int) $album['id']);
         </a>
         <?php $items[] = ob_get_clean();
     }
-    echo Ui::section($album['title'], Ui::grid($items, ['cols' => 6]), []);
+    echo Ui::grid($items, ['cols' => 6]);
     ?>
 <?php endif; ?>
 

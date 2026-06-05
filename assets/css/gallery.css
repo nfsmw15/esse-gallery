@@ -122,8 +122,10 @@
     display: inline-block;
     margin-bottom: 1.5rem;
     font-size: .875rem;
-    text-decoration: none;
-    opacity: .65;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: .8;
 }
 
 .gal-back-link:hover {
@@ -158,12 +160,13 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, .93);
-    z-index: 1050;
+    z-index: 9999;
     flex-direction: column;
+    cursor: zoom-out;
 }
 
 .gal-lightbox.is-open {
-    display: flex;
+    display: flex !important;
 }
 
 .gal-lb-header {
@@ -209,6 +212,14 @@
     max-height: calc(100vh - 110px);
     object-fit: contain;
     display: block;
+}
+
+.gal-lb-close,
+.gal-lb-prev,
+.gal-lb-next {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
 }
 
 .gal-lb-prev,
