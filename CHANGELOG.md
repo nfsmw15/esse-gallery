@@ -1,5 +1,19 @@
 # Changelog — esse-gallery
 
+## [0.2.2] — 2026-06-05
+
+### Behoben
+- **Lightbox schließt nicht:** Zwei-Schichten-Fix:
+  1. `display: none !important` auf `.gal-lightbox` verhindert dass Theme-CSS
+     (`display: flex` ohne `!important`) die geschlossene Lightbox sichtbar hält
+  2. Portal-Pattern: Lightbox wird per JS ans Ende von `<body>` verschoben,
+     sodass kein Vorfahren-Element (transform, z-index, overflow) interferieren kann
+- Direkte Event-Listener auf Buttons zusätzlich zur Delegation als Fallback;
+  `closest()` im Delegation-Handler für robusteres Button-Targeting
+- Backdrop-Klick (`.gal-lb-body`) schließt die Lightbox ebenfalls
+
+---
+
 ## [0.2.1] — 2026-06-05
 
 ### Behoben

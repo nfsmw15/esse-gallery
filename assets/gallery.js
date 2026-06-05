@@ -11,16 +11,21 @@
    LIGHTBOX (Frontend)
    ===================================================================== */
 function galLightboxInit() {
-    var links     = Array.from(document.querySelectorAll('.gal-thumb-link'));
-    var lightbox  = document.getElementById('gal-lightbox');
-    var lbImg     = document.getElementById('gal-lb-img');
-    var lbTitle   = document.getElementById('gal-lb-title');
-    var lbCounter = document.getElementById('gal-lb-counter');
-    var lbPrev    = document.getElementById('gal-lb-prev');
-    var lbNext    = document.getElementById('gal-lb-next');
-    var lbClose   = document.getElementById('gal-lb-close');
+    var links    = Array.from(document.querySelectorAll('.gal-thumb-link'));
+    var lightbox = document.getElementById('gal-lightbox');
 
     if (!lightbox || links.length === 0) return;
+
+    // Portal-Pattern: Lightbox ans Body-Ende verschieben damit kein Theme-CSS
+    // (transform, overflow, z-index auf Vorfahren) die Darstellung stört.
+    document.body.appendChild(lightbox);
+
+    var lbImg     = lightbox.querySelector('[id="gal-lb-img"]');
+    var lbTitle   = lightbox.querySelector('[id="gal-lb-title"]');
+    var lbCounter = lightbox.querySelector('[id="gal-lb-counter"]');
+    var lbPrev    = lightbox.querySelector('[id="gal-lb-prev"]');
+    var lbNext    = lightbox.querySelector('[id="gal-lb-next"]');
+    var lbClose   = lightbox.querySelector('[id="gal-lb-close"]');
 
     var cur = 0;
 
@@ -52,13 +57,18 @@ function galLightboxInit() {
         });
     });
 
-    // Event-Delegation: ein Handler auf dem Container statt drei auf Null-anfälligen IDs
+    // Direkte Listener auf Buttons (stopPropagation verhindert Doppelauslösung via Delegation)
+    if (lbClose) lbClose.addEventListener('click', function (e) { e.stopPropagation(); close(); });
+    if (lbPrev)  lbPrev.addEventListener('click',  function (e) { e.stopPropagation(); show(cur - 1); });
+    if (lbNext)  lbNext.addEventListener('click',  function (e) { e.stopPropagation(); show(cur + 1); });
+
+    // Delegation als Fallback + Backdrop-Klick
     lightbox.addEventListener('click', function (e) {
         var t = e.target;
-        if (t === lightbox)             { close(); return; }
-        if (t.id === 'gal-lb-close')   { close(); return; }
-        if (t.id === 'gal-lb-prev')    { show(cur - 1); return; }
-        if (t.id === 'gal-lb-next')    { show(cur + 1); return; }
+        if (t === lightbox || t.classList.contains('gal-lb-body')) { close(); return; }
+        if (t.closest && t.closest('[id="gal-lb-close"]'))         { close(); return; }
+        if (t.closest && t.closest('[id="gal-lb-prev"]'))          { show(cur - 1); return; }
+        if (t.closest && t.closest('[id="gal-lb-next"]'))          { show(cur + 1); return; }
     });
 
     // Touch-Swipe
